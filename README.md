@@ -148,7 +148,7 @@ Stock-Price-Movement-Prediction/
 │   └── README.md
 │
 ├── src/
-│   └── stock_prediction.py
+│   └── stock_prediction.ipynb
 │
 ├── results/
 │   ├── arima_prediction.png
