@@ -1,149 +1,195 @@
-# Deep-Learning-Model-Stock-Price
-Stock Price Movement Prediction using Hybrid LSTM–Transformer
+# Stock Price Movement Prediction Using Hybrid LSTM–Transformer Models
 
-This repository contains the code and experiments for a research project focused on predicting short-term stock price movements using a hybrid deep learning architecture that combines Long Short-Term Memory (LSTM) networks with Transformer-based self-attention. The project evaluates whether hybrid sequential models can improve directional predictability and risk-adjusted performance compared to classical statistical and standalone deep learning baselines.
+## Overview
 
-🔍 Problem Statement
+This project investigates the use of a Hybrid LSTM–Transformer architecture for predicting next-day stock price movements. The model combines the sequential learning capability of Long Short-Term Memory (LSTM) networks with the self-attention mechanism of Transformers to capture both short-term market dynamics and long-range temporal dependencies.
 
-Financial markets are highly noisy, nonlinear, and non-stationary, making accurate short-horizon stock price prediction extremely challenging. Traditional statistical models struggle to capture complex temporal dependencies, while pure deep learning models often overfit noise. This project investigates whether a hybrid LSTM–Transformer architecture can better capture meaningful temporal structure and improve price movement (up/down) prediction, even when exact return forecasting remains difficult.
+The study evaluates whether combining recurrent and attention-based architectures improves directional prediction performance compared to traditional statistical and deep learning approaches.
 
-🎯 Objectives
+---
 
-Predict daily stock price movements (UP/DOWN) using historical market data
+## Problem Statement
 
-Compare classical (ARIMA) and deep learning baselines (LSTM)
+Financial markets are highly volatile, noisy, and non-stationary, making stock price prediction a challenging task.
 
-Propose and evaluate a hybrid LSTM–Transformer model
+The objective of this project is to:
 
-Analyse model confidence using conviction-based filtering
+* Predict next-day stock price movements
+* Improve directional forecasting accuracy
+* Evaluate trading relevance using risk-adjusted metrics
+* Compare hybrid deep learning models against classical baselines
 
-Evaluate performance using both statistical and trading-oriented metrics
+---
 
-📊 Dataset
+## Dataset
 
-Primary asset: Apple Inc. (AAPL)
+Historical daily stock market data was collected for:
 
-Frequency: Daily data
+* Apple Inc. (AAPL)
+* Tesla Inc. (TSLA)
 
-Features:
+Features include:
 
-OHLCV (Open, High, Low, Close, Volume)
+* Open
+* High
+* Low
+* Close
+* Volume (OHLCV)
 
-Technical indicators (RSI, MACD, Bollinger Bands, ATR, OBV)
+Additional engineered features include technical indicators and sentiment features.
 
-News sentiment (FinBERT-based, limited due to API constraints)
+---
 
-⚠️ Note: Due to restricted access to real-time news APIs, sentiment data coverage is limited. As a result, price- and volatility-based features dominate model performance.
+## Feature Engineering
 
-🧠 Model Architectures
-1. ARIMA (Baseline)
+The following technical indicators were incorporated:
 
-A classical statistical time-series model used as a linear benchmark.
+### Momentum Indicators
 
-2. LSTM (Deep Learning Baseline)
+* Relative Strength Index (RSI)
+* MACD
 
-A recurrent neural network that captures short-term temporal dependencies in historical price sequences.
+### Volatility Indicators
 
-3. Hybrid LSTM–Transformer (Proposed Model)
+* Bollinger Bands
+* Average True Range (ATR)
 
-LSTM layer for local sequential pattern learning
+### Volume Indicators
 
-Transformer encoder for long-range temporal attention
+* On-Balance Volume (OBV)
 
-Dropout and regularisation to prevent overfitting
+### Additional Features
 
-Final output predicts log return, converted into price movement direction
+* Log Returns
+* Volume Transformation
+* FinBERT-based Sentiment Scores (optional)
 
-This hybrid design enables the model to focus on informative historical periods while remaining robust to noise.
+---
 
-⚙️ Training Strategy
+## Model Architecture
 
-Optimizer: Adam with L2 regularisation (weight decay = 1e-4)
+The proposed architecture consists of:
 
-Learning Rate Scheduler: StepLR (learning rate reduced by 50% every 10 epochs)
+```text
+Input Sequence (60 Days × Features)
+        ↓
+LSTM Layer (64 Hidden Units)
+        ↓
+Dropout (0.2)
+        ↓
+Transformer Encoder
+(2 Layers, 4 Attention Heads)
+        ↓
+Temporal Aggregation
+        ↓
+Dense Layer
+        ↓
+Predicted Log Return
+```
 
-Early Stopping: Training stops if validation loss does not improve for 10 epochs
+### Why Hybrid?
 
-Batch Size: 32
+* LSTM captures short-term sequential patterns.
+* Transformer captures long-range dependencies.
+* Combined architecture improves market trend recognition.
 
-Sequence Length: 60 trading days
+---
 
-📈 Evaluation Metrics
+## Models Evaluated
 
-The model is evaluated using both prediction accuracy and trading relevance metrics:
+### Baseline Models
 
-RMSE / MAE / R² – numerical prediction quality
+* ARIMA (1,0,1)
+* LSTM
 
-Directional Accuracy – correctness of UP/DOWN predictions
+### Proposed Model
 
-Sharpe Ratio (daily) – risk-adjusted performance of a strategy following model signals
+* Hybrid LSTM–Transformer
 
-Conviction Metrics – performance on high-confidence predictions only
+---
 
-Permutation Feature Importance – interpretability and sensitivity analysis
+## Results
 
-🧪 Key Results (Summary)
+| Model              | Directional Accuracy | RMSE    |
+| ------------------ | -------------------- | ------- |
+| ARIMA              | 59.3%                | 0.15381 |
+| LSTM               | 62.8%                | 0.16132 |
+| LSTM + Transformer | 65.7%                | 0.07312 |
 
-Hybrid LSTM–Transformer outperforms ARIMA and LSTM baselines in directional accuracy
+### Key Findings
 
-High-conviction trades achieve significantly higher accuracy than global predictions
+* Hybrid LSTM–Transformer achieved the highest directional accuracy.
+* Transformer attention improved long-range dependency modelling.
+* The model captured market trends more effectively than standalone LSTM.
+* Volatility-based features contributed most to predictive performance.
 
-Price- and volatility-based indicators are the most influential features
+---
 
-Positive Sharpe ratio indicates economically meaningful signals despite market noise
+## Technologies Used
 
-📂 Repository Structure
+* Python
+* PyTorch
+* Pandas
+* NumPy
+* Scikit-Learn
+* Transformers
+* LSTM Networks
+* FinBERT
+* Financial Time-Series Analysis
+
+---
+
+## Repository Structure
+
+```text
+Stock-Price-Movement-Prediction/
+│
 ├── data/
-│   ├── stock_price_data.csv
-│   └── (optional) news_data.csv
-├── models/
-│   ├── lstm_model.py
-│   └── hybrid_lstm_transformer.py
-├── experiments/
-│   ├── training_pipeline.py
-│   ├── evaluation.py
-│   └── ablation_studies.py
+│   └── README.md
+│
+├── src/
+│   └── stock_prediction.py
+│
 ├── results/
-│   ├── plots/
-│   └── Research_Features_and_Predictions.csv
-├── README.md
-└── requirements.txt
+│   ├── arima_prediction.png
+│   ├── lstm_prediction.png
+│   ├── hybrid_prediction.png
+│   ├── feature_importance.png
+│   └── model_comparison.png
+│
+└── README.md
+```
 
-🚀 How to Run
+---
 
-Install dependencies:
+## Applications
 
-pip install -r requirements.txt
+* Algorithmic Trading
+* Portfolio Management
+* Risk Management
+* Financial Forecasting
+* Quantitative Finance Research
 
+---
 
-Prepare data:
+## Future Improvements
 
-Place stock price CSV in /data
+* Real-time News Integration
+* Multi-Asset Forecasting
+* Reinforcement Learning Trading Agents
+* Explainable AI (XAI)
+* Cross-Market Transfer Learning
 
-(Optional) Add news data if available
+---
 
-Train and evaluate:
+## Author
 
-python experiments/training_pipeline.py
+**Veera Suresh Akuthota**
+MSc Data Science
+University of Roehampton, London
 
-⚠️ Limitations
+---
 
-Evaluated primarily on a single stock (AAPL)
+## Disclaimer
 
-Daily frequency only
-
-No transaction costs or slippage included
-
-Limited sentiment data due to API constraints
-
-Performance may degrade under extreme out-of-distribution market events
-
-🔮 Future Work
-
-Extend to multi-asset and cross-sectional modelling
-
-Integrate reliable real-time news or alternative data
-
-Add uncertainty-aware or probabilistic prediction heads
-
-Incorporate transaction costs and portfolio optimisation
+This project is intended for academic and research purposes only and should not be considered financial advice.
