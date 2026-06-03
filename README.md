@@ -150,7 +150,7 @@ Stock-Price-Movement-Prediction/
 ├── src/
 │   └── stock_prediction.ipynb
 │
-├── results/
+├── outputs/
 │   ├── arima_prediction.png
 │   ├── lstm_prediction.png
 │   ├── hybrid_prediction.png
